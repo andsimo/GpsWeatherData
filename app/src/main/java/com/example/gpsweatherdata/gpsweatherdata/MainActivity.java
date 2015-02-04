@@ -1,9 +1,12 @@
 package com.example.gpsweatherdata.gpsweatherdata;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -36,4 +39,17 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void updateFiles(View view){
+        Toast.makeText(this, "update", Toast.LENGTH_SHORT);
+       
+    }
+
+    public void showMap(View view){
+        Toast.makeText(this, "showMap", Toast.LENGTH_LONG);
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
+    }
+
+
 }
