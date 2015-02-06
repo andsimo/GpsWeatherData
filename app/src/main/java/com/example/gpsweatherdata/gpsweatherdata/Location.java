@@ -5,7 +5,41 @@ package com.example.gpsweatherdata.gpsweatherdata;
  */
 public class Location {
 
-    public Location(){
 
+    private double latitude, longitude;
+    private int sensors;
+
+    public Location(){
+        sensors = 1;
     }
+
+    public Location(double latitude, double longitude){
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.sensors = 1;
+    }
+
+    public void addSensors(){
+        sensors++;
+    }
+
+    public void addSensors(int i){
+        sensors = sensors + i;
+    }
+
+    public double getLat(){
+        return latitude;
+    }
+
+    public double getLong(){
+        return longitude;
+    }
+
+    public int getNumSensors(){
+        return sensors;
+    }
+
+
+
+
 }
