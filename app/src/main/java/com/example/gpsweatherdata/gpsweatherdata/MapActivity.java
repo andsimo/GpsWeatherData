@@ -1,6 +1,6 @@
 package com.example.gpsweatherdata.gpsweatherdata;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -14,10 +14,15 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 
+/*
+Klass som använder google maps v2 api för att skapa ett fragment som vi kan "måla" prickar på.
+ */
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private GoogleMap map;
+    private ArrayList<Location> locations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         setContentView(R.layout.activity_map);
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Intent intent = this.getIntent();               //Plockar ut intenten som kommer från mainactivity.
+        locations = intent.getParcelableArrayListExtra("locations");    //Placeras i en arraylist.
+
 
     }
 
@@ -51,28 +60,39 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+     *Måste vänta på att kartan är redo innan man får börja måla på den.
+     */
     @Override
     public void onMapReady(GoogleMap gMap) {
         map = gMap;
-        addMarker();
+        //addMarkers();
+        addCircles();   //Välj mellan markörer och cirklar. Måste förfinas!
+    }
+
+
+    /*
+    Går igenom listan och lägger till en marker för varje position. Klickar man på markören visas antalet sensorer för platsen.
+     */
+    public void addMarkers(){
+        for(int i = 0; i < locations.size(); i++){
+            map.addMarker(new MarkerOptions()
+                .position(new LatLng(locations.get(i).getLat(), locations.get(i).getLong()))
+                .title("Sensors: "+locations.get(i).getNumSensors()));
+        }
     }
 
     /*
-    Double lat och Double long inparametrar skall läggas till..!
+    Gör samma som ovan fast med cirklar. Får en orange/gul färg. Radiusen på cirkeln beror på antalet sensors med en faktor 0.2
      */
-    public void addMarker(){
-        //3 st sätt att göra det på...
-        // 1. Marker med custom icon.
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(0, 0))
-                .title("Marker"));
-
-        //2. circle - Måste då tänka på radius!
-        map.addCircle(new CircleOptions().center(new LatLng(-2.037189, 15.075171)).radius(100000).strokeColor(Color.rgb(235, 231, 30)).fillColor(Color.YELLOW));
-
-
-        //3. Symbols... Har ännu ej testat.
-
+    public void addCircles(){
+        for(int i = 0; i < locations.size(); i++) {
+            map.addCircle(new CircleOptions()
+                    .center(new LatLng(locations.get(i).getLat(), locations.get(i).getLong()))
+                    .radius(10000 + 10000 * 0.2* locations.get(i).getNumSensors())
+                    .strokeColor(Color.rgb(255, 169, 20))
+                    .fillColor(Color.rgb(255, 169, 20)));
+        }
     }
 
 

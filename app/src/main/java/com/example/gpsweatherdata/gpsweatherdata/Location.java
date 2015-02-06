@@ -1,22 +1,33 @@
 package com.example.gpsweatherdata.gpsweatherdata;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
- * Created by Simon on 2015-02-04.
+ * Objekt för att spara varje plats. Innehåller sensorernas latitud och longitud,
+ * samt sparar antalet sensorer som har samma lokalisering.
+ *
+ * Implementerar Parcelable för att kunna skicka dessa som intent till andra aktiviteter.
  */
-public class Location {
+public class Location implements Parcelable {
 
 
     private double latitude, longitude;
-    private int sensors;
+    private int sensors = 1;
 
-    public Location(){
-        sensors = 1;
+    /*
+    Måste ha samma ordning som writeToParcel för att kunna återskapa objektet.
+     */
+    public Location(Parcel in){
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
+        this.sensors = in.readInt();
     }
 
     public Location(double latitude, double longitude){
+        super();
         this.latitude = latitude;
         this.longitude = longitude;
-        this.sensors = 1;
     }
 
     public void addSensors(){
@@ -40,6 +51,28 @@ public class Location {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
+        dest.writeInt(this.sensors);
+    }
+
+    public static final Parcelable.Creator<Location> CREATOR
+            = new Parcelable.Creator<Location>() {
+
+        public Location createFromParcel(Parcel in) {
+            return new Location(in);
+        }
+
+        public Location[] newArray(int size) {
+            return new Location[size];
+        }
+    };
 
 }
