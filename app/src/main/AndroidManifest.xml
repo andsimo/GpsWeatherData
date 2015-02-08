@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name=".MapActivity"
-            android:label="@string/title_activity_map" >
+            android:label="@string/title_activity_map"
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
         <meta-data

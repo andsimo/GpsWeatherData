@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -29,13 +30,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        findViewById(R.id.spinner).setVisibility(View.GONE);
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         Intent intent = this.getIntent();               //Plockar ut intenten som kommer från mainactivity.
         locations = intent.getParcelableArrayListExtra("locations");    //Placeras i en arraylist.
-
-
+        new WeatherTask().execute();
     }
 
 
@@ -67,7 +68,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap gMap) {
         map = gMap;
-        new WeatherTask().execute();
         //addMarkers();
         //addCircles();   //Välj mellan markörer och cirklar. Måste förfinas!
 
@@ -89,6 +89,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         }
     }
 
+    public void addMarker(Location location){
+
+        if(location != null) {
+
+            map.addMarker(new MarkerOptions()
+                    .position(new LatLng(location.getLat(), location.getLong()))
+                    .title("Sensors: " + location.getNumSensors() + " \n Cloudiness: " + location.getCloudiness()));
+        }
+    }
+
     /*
     Gör samma som ovan fast med cirklar. Får en orange/gul färg. Radiusen på cirkeln beror på antalet sensors med en faktor 0.2
      */
@@ -104,24 +114,36 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
 
 
-    private class WeatherTask extends AsyncTask<Void, Void, Void>{
+    private class WeatherTask extends AsyncTask<Void, Location, Void>{
 
-
+        @Override
+        protected void onPreExecute(){
+            findViewById(R.id.spinner).setVisibility(View.VISIBLE);
+        }
 
         @Override
         protected Void doInBackground(Void... params) {
             WeatherCollector wc = new WeatherCollector();
-            if(locations != null)
-                wc.getWeather(locations);
 
+            if(locations != null) {
+                for (Location location : locations) {
+                    if(wc.getWeather(location))
+                        publishProgress(location);
 
+                }
+            }
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void result){
+        protected void onProgressUpdate(Location... progress){
+            addMarker(progress[0]);
+        }
 
-           addMarkers();
+        @Override
+        protected void onPostExecute(Void result){
+           findViewById(R.id.spinner).setVisibility(View.GONE);
+           //addMarkers();
         }
     }
 

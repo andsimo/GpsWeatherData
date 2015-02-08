@@ -19,12 +19,12 @@ public class WeatherCollector {
     private static String API_KEY ="&APPID=0ab3b60b021121ca736c3e9fdc584aa2"; //API_Nyckel som tilldelas vid registrering pï¿½ hemsidan.
 
 
-    public String getWeather(ArrayList<Location> locations){
+    public boolean getWeather(Location location){
 
         HttpURLConnection conn = null ;
         InputStream is = null;
 
-        for(Location location: locations){
+
             String lat = "lat="+location.getLat()+"&";
             String lon = "lon="+location.getLong();
 
@@ -54,10 +54,11 @@ public class WeatherCollector {
 
             }catch (Throwable t){
                 t.printStackTrace();
+                return false;
             }
-        }
 
-        return null;
+
+        return true;
     }
 
 
