@@ -95,7 +95,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(location.getLat(), location.getLong()))
-                    .title("Sensors: " + location.getNumSensors() + " \n Cloudiness: " + location.getCloudiness()));
+                    .title("Sensors: " + location.getNumSensors() +
+                            " \n Cloudiness: " + location.getCloudiness() +
+                            " \n Lat: " + location.getLat() +
+                            " \n Long: " + location.getLong() ));
         }
     }
 
@@ -143,7 +146,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         @Override
         protected void onPostExecute(Void result){
            findViewById(R.id.spinner).setVisibility(View.GONE);
-           //addMarkers();
+
         }
     }
 
