@@ -2,6 +2,7 @@ package com.example.gpsweatherdata.gpsweatherdata;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
@@ -66,8 +67,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap gMap) {
         map = gMap;
+        new WeatherTask().execute();
         //addMarkers();
-        addCircles();   //Välj mellan markörer och cirklar. Måste förfinas!
+        //addCircles();   //Välj mellan markörer och cirklar. Måste förfinas!
+
+
     }
 
 
@@ -75,10 +79,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     Går igenom listan och lägger till en marker för varje position. Klickar man på markören visas antalet sensorer för platsen.
      */
     public void addMarkers(){
-        for(int i = 0; i < locations.size(); i++){
-            map.addMarker(new MarkerOptions()
-                .position(new LatLng(locations.get(i).getLat(), locations.get(i).getLong()))
-                .title("Sensors: "+locations.get(i).getNumSensors()));
+
+        if(locations != null) {
+            for (int i = 0; i < locations.size(); i++) {
+                map.addMarker(new MarkerOptions()
+                        .position(new LatLng(locations.get(i).getLat(), locations.get(i).getLong()))
+                        .title("Sensors: " + locations.get(i).getNumSensors() + " \n Cloudiness: " + locations.get(i).getCloudiness()));
+            }
         }
     }
 
@@ -94,6 +101,30 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     .fillColor(Color.rgb(255, 169, 20)));
         }
     }
+
+
+
+    private class WeatherTask extends AsyncTask<Void, Void, Void>{
+
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            WeatherCollector wc = new WeatherCollector();
+            if(locations != null)
+                wc.getWeather(locations);
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result){
+
+           addMarkers();
+        }
+    }
+
 
 
 }

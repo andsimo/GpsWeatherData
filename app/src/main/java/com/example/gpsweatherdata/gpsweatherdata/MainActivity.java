@@ -1,5 +1,6 @@
 package com.example.gpsweatherdata.gpsweatherdata;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -19,12 +20,23 @@ public class MainActivity extends ActionBarActivity {
 
     //private Places locations;
     private ArrayList<Location> locations;
+    private ProgressDialog progressDL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         locations = new ArrayList<>();
+
+        /*
+        Skapar en ruta som indikerar att nedladdning av data görs.
+         */
+        progressDL = new ProgressDialog(this);
+        progressDL.setMessage("Downloading locations");
+        progressDL.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDL.setIndeterminate(true);
+
+
     }
 
 
@@ -52,7 +64,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void updateFiles(View view){
-        new DBConnector().execute(locations);
+
+        new DBConnector().execute();
+
+
         //Toast.makeText(this, "" + locations.size() + " files where added", Toast.LENGTH_LONG).show();
     }
 
@@ -70,7 +85,7 @@ public class MainActivity extends ActionBarActivity {
     Koppling mot databsen måste ske i bakgrunden med hjälp av AsyncTask för att inte låsa hela GUI't.
     Fundering... byta ut mot intentservice/resultreceiver fördel: kan fortsätta söka efter filer även om aktiviteten byts.
      */
-    private class DBConnector extends AsyncTask {
+    private class DBConnector extends AsyncTask<Void, Void, Void> {
 
         private String url = "jdbc:mysql://46.239.117.17:3306/";	//Just nu endast lokalt. min IP 46.239.117.17    localhost
         private String DbName = "GVS";						//Schemats namn satt av Simon
@@ -79,8 +94,18 @@ public class MainActivity extends ActionBarActivity {
         private String password = "parans";                 //Lösen satt av Simon.
        // private int files = 0;
 
+
+
         @Override
-        protected Object doInBackground(Object[] params) {
+        protected void onPreExecute(){
+            locations.clear(); //Nollställer hashmapen så att inga dubletter skapas ifall man uppdaterar filerna fler ggr.
+            progressDL.show();  //Visar nedladdningsdialog.
+
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
             try{
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + DbName, username, password);
@@ -115,8 +140,17 @@ public class MainActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
 
-            return locations;
+            return null;
         }
+
+
+        @Override
+        protected void onPostExecute(Void result){
+            progressDL.hide();  //Stänger nedladdningsdialog.
+        }
+
+
+
 
 
     }

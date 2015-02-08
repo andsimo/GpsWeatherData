@@ -14,6 +14,8 @@ public class Location implements Parcelable {
 
     private double latitude, longitude;
     private int sensors = 1;
+    private boolean day;
+    private int cloudiness;
 
     /*
     Måste ha samma ordning som writeToParcel för att kunna återskapa objektet.
@@ -38,6 +40,10 @@ public class Location implements Parcelable {
         sensors = sensors + i;
     }
 
+    public void setCloudiness(int clouds){
+        cloudiness = clouds;
+    }
+
     public double getLat(){
         return latitude;
     }
@@ -49,6 +55,12 @@ public class Location implements Parcelable {
     public int getNumSensors(){
         return sensors;
     }
+
+    public int getCloudiness(){
+        return cloudiness;
+    }
+
+
 
 
     @Override
@@ -74,5 +86,7 @@ public class Location implements Parcelable {
             return new Location[size];
         }
     };
+
+
 
 }
