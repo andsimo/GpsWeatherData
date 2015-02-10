@@ -36,6 +36,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private GoogleMap map;
     private ArrayList<Location> locations;
     private boolean newlyUpdated;
+    private long timeStamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         System.out.println("Loading...");
         ArrayList<Location> tempList;
         SharedPreferences data = getSharedPreferences(LOCATION_DATA, 0);
+
+        timeStamp = data.getLong("time", 0);
+
         if(data.contains(LOCATION_LIST)){
             String json = data.getString(LOCATION_LIST, "");
             Gson gson = new Gson();
@@ -107,7 +111,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap gMap) {
         map = gMap;
-        if(newlyUpdated)
+        if(newlyUpdated || (timeStamp + 3600) > (System.currentTimeMillis() / 1000L))
             refreshWeather();
         else
             addMarkers();
@@ -209,6 +213,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         Gson gson = new Gson();
         String json = gson.toJson(locations);
         editor.putString(LOCATION_LIST, json);
+        editor.putLong("lastTime", System.currentTimeMillis());
         editor.commit();
         System.out.println("Saving...");
     }

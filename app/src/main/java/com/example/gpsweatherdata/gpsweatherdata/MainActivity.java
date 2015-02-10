@@ -28,6 +28,7 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<Location> locations;
     private ProgressDialog progressDL;
     private boolean newlyUpdated;
+    private long timeStamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,12 @@ public class MainActivity extends ActionBarActivity {
         progressDL.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDL.setIndeterminate(true);
         newlyUpdated = false;
+    }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        timeStamp = System.currentTimeMillis() / 1000L;
 
     }
 
@@ -85,6 +91,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(this, MapActivity.class);
         //intent.putParcelableArrayListExtra("locations", locations);
         intent.putExtra("new", newlyUpdated);
+
         startActivity(intent);
 
 
@@ -175,6 +182,7 @@ public class MainActivity extends ActionBarActivity {
         Gson gson = new Gson();
         String json = gson.toJson(locations);
         editor.putString(LOCATION_LIST, json);
+        editor.putLong("lastTime", System.currentTimeMillis());
         editor.commit();
         System.out.println("Saving...");
     }

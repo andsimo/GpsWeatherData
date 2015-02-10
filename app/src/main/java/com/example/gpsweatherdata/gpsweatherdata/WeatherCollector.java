@@ -42,7 +42,7 @@ public class WeatherCollector {
 
                 while (  (line = br.readLine()) != null ){ //Läser och printar ut resultatet frï¿½n query.
                     buffer.append(line + "\r\n");
-                    System.out.println("Line = " + line);
+                   // System.out.println("Line = " + line);
                     if(line != null)
                     getClouds(line, location);
                 }
@@ -64,13 +64,13 @@ public class WeatherCollector {
 
 
     public static void getClouds(String data, Location location) throws JSONException {
-        System.out.println("data = " + data);
+        //System.out.println("data = " + data);
         JSONObject jObj = new JSONObject(data);
 
 
         JSONObject cOjb = getObject("clouds", jObj);
         location.setCloudiness(getInt("all", cOjb));
-        System.out.println("location = " + location.getCloudiness());
+        //System.out.println("location = " + location.getCloudiness());
 
     }
 
