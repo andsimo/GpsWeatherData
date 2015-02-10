@@ -2,12 +2,15 @@ package com.example.gpsweatherdata.gpsweatherdata;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.google.gson.Gson;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,9 +21,13 @@ import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
 
+    private static final String LOCATION_DATA = "locationdata";
+    private static final String LOCATION_LIST = "locationlist";
+
     //private Places locations;
     private ArrayList<Location> locations;
     private ProgressDialog progressDL;
+    private boolean newlyUpdated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
         progressDL.setMessage("Downloading locations");
         progressDL.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDL.setIndeterminate(true);
+        newlyUpdated = false;
 
 
     }
@@ -66,6 +74,7 @@ public class MainActivity extends ActionBarActivity {
     public void updateFiles(View view){
 
         new DBConnector().execute();
+        newlyUpdated = true;
 
 
         //Toast.makeText(this, "" + locations.size() + " files where added", Toast.LENGTH_LONG).show();
@@ -74,7 +83,8 @@ public class MainActivity extends ActionBarActivity {
     public void showMap(View view){
 
         Intent intent = new Intent(this, MapActivity.class);
-        intent.putParcelableArrayListExtra("locations", locations);
+        //intent.putParcelableArrayListExtra("locations", locations);
+        intent.putExtra("new", newlyUpdated);
         startActivity(intent);
 
 
@@ -146,13 +156,27 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Void result){
+            progressDL.setMessage("Storing values");
+            saveSP();
             progressDL.hide();  //Stänger nedladdningsdialog.
+
         }
 
 
 
 
 
+    }
+
+    public void saveSP(){
+        SharedPreferences data = getSharedPreferences(LOCATION_DATA, 0);
+        SharedPreferences.Editor editor = data.edit();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(locations);
+        editor.putString(LOCATION_LIST, json);
+        editor.commit();
+        System.out.println("Saving...");
     }
 
 

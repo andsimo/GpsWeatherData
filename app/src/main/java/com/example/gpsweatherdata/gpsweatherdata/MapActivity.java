@@ -1,6 +1,7 @@
 package com.example.gpsweatherdata.gpsweatherdata;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -15,16 +17,25 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /*
 Klass som använder google maps v2 api för att skapa ett fragment som vi kan "måla" prickar på.
  */
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
+    private static final String LOCATION_DATA = "locationdata";
+    private static final String LOCATION_LIST = "locationlist";
+
     private GoogleMap map;
     private ArrayList<Location> locations;
+    private boolean newlyUpdated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +46,36 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         mapFragment.getMapAsync(this);
 
         Intent intent = this.getIntent();               //Plockar ut intenten som kommer från mainactivity.
-        locations = intent.getParcelableArrayListExtra("locations");    //Placeras i en arraylist.
-        new WeatherTask().execute();
+        newlyUpdated = intent.getExtras().getBoolean("new");
+
+        locations = loadSP();
+
+
+
+
+        //locations = intent.getParcelableArrayListExtra("locations");    //Placeras i en arraylist.
+
+
+
+    }
+
+
+
+
+    public ArrayList<Location> loadSP(){
+        System.out.println("Loading...");
+        ArrayList<Location> tempList;
+        SharedPreferences data = getSharedPreferences(LOCATION_DATA, 0);
+        if(data.contains(LOCATION_LIST)){
+            String json = data.getString(LOCATION_LIST, "");
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<Location>>(){}.getType();
+            tempList = gson.fromJson(json, type);
+
+        }else{
+            return null;
+        }
+        return tempList;
     }
 
 
@@ -68,10 +107,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap gMap) {
         map = gMap;
-        //addMarkers();
-        //addCircles();   //Välj mellan markörer och cirklar. Måste förfinas!
-
-
+        if(newlyUpdated)
+            refreshWeather();
+        else
+            addMarkers();
+        //new WeatherTask().execute();
     }
 
 
@@ -81,10 +121,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     public void addMarkers(){
 
         if(locations != null) {
-            for (int i = 0; i < locations.size(); i++) {
+            for (Location location : locations) {
                 map.addMarker(new MarkerOptions()
-                        .position(new LatLng(locations.get(i).getLat(), locations.get(i).getLong()))
-                        .title("Sensors: " + locations.get(i).getNumSensors() + " \n Cloudiness: " + locations.get(i).getCloudiness()));
+                        .position(new LatLng(location.getLat(), location.getLong()))
+                        .title("Sensors: " + location.getNumSensors() +
+                                " \n Cloudiness: " + location.getCloudiness() +
+                                " \n Lat: " + location.getLat() +
+                                " \n Long: " + location.getLong()));
             }
         }
     }
@@ -119,6 +162,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private class WeatherTask extends AsyncTask<Void, Location, Void>{
 
+        int i = 0;
         @Override
         protected void onPreExecute(){
             findViewById(R.id.spinner).setVisibility(View.VISIBLE);
@@ -132,6 +176,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 for (Location location : locations) {
                     if(wc.getWeather(location))
                         publishProgress(location);
+                        i++;
 
                 }
             }
@@ -146,9 +191,37 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         @Override
         protected void onPostExecute(Void result){
            findViewById(R.id.spinner).setVisibility(View.GONE);
+           Toast.makeText(getApplicationContext(), i+" locations were loaded.", Toast.LENGTH_SHORT).show();
 
         }
     }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        saveSP();
+    }
+
+    public void saveSP(){
+        SharedPreferences data = getSharedPreferences(LOCATION_DATA, 0);
+        SharedPreferences.Editor editor = data.edit();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(locations);
+        editor.putString(LOCATION_LIST, json);
+        editor.commit();
+        System.out.println("Saving...");
+    }
+
+    public void updateWeather(View v){
+        refreshWeather();
+    }
+
+    public void refreshWeather(){
+        map.clear();
+        new WeatherTask().execute();
+    }
+
 
 
 

@@ -3,13 +3,15 @@ package com.example.gpsweatherdata.gpsweatherdata;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Objekt för att spara varje plats. Innehåller sensorernas latitud och longitud,
  * samt sparar antalet sensorer som har samma lokalisering.
  *
  * Implementerar Parcelable för att kunna skicka dessa som intent till andra aktiviteter.
  */
-public class Location implements Parcelable {
+public class Location implements Parcelable, Serializable{
 
 
     private double latitude, longitude;
