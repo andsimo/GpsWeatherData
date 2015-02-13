@@ -10,20 +10,18 @@
     <Button
         android:layout_width="200dp"
         android:layout_height="80dp"
-        android:text="@string/updateloc"
         android:id="@+id/updateButton"
         android:onClick="updateFiles"
-        android:background="#ff707070"
-        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="138dp" />
+        android:background="@drawable/updatebutton"/>
 
 
     <!--SHOW MAP BUTTON -->
+
     <Button
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="80dp"
-        android:text="@string/showmap"
         android:id="@+id/showMapButton"
         android:layout_above="@+id/updateButton"
         android:layout_alignLeft="@+id/updateButton"
@@ -32,7 +30,7 @@
         android:layout_alignRight="@+id/updateButton"
         android:layout_alignEnd="@+id/updateButton"
         android:onClick="showMap"
-        android:background="#ff707070"/>
+        android:background="@drawable/showmapbutton"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -42,9 +40,11 @@
         android:id="@+id/logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="59dp"
         android:textSize="80dp"
-        android:textColor="#ffd2d2d2"/>
+        android:textColor="#ffd2d2d2"
+        />
+
+
 
 
 </RelativeLayout>

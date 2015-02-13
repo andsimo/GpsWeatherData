@@ -9,5 +9,6 @@
     <string name="showmap">Show Map</string>
     <string name="updateloc">Update locations</string>
     <string name="parans">PARANS</string>
+    <string name="showmapimage">showmapimage</string>
 
 </resources>
