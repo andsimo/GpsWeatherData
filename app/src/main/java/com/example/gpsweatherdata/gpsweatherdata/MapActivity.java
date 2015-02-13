@@ -147,7 +147,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                             " \n Cloudiness: " + location.getCloudiness() +
                             " \n Lat: " + location.getLat() +
                             " \n Long: " + location.getLong())
-                    .icon(BitmapDescriptorFactory.defaultMarker(location.getCloudiness())));
+                    .icon(BitmapDescriptorFactory.defaultMarker(100-location.getCloudiness())));
 
 
         }
