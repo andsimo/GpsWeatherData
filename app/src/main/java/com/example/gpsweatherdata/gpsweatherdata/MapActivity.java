@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -145,8 +146,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     .title("Sensors: " + location.getNumSensors() +
                             " \n Cloudiness: " + location.getCloudiness() +
                             " \n Lat: " + location.getLat() +
-                            " \n Long: " + location.getLong() ));
+                            " \n Long: " + location.getLong())
+                    .icon(BitmapDescriptorFactory.defaultMarker(location.getCloudiness())));
+
+
         }
+
+
     }
 
     /*
