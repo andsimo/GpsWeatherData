@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,25 +45,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         findViewById(R.id.spinner).setVisibility(View.GONE);
+
+
+        GoogleMapOptions mapOptions = new GoogleMapOptions().mapType(GoogleMap.MAP_TYPE_HYBRID).rotateGesturesEnabled(false);
+
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+
         mapFragment.getMapAsync(this);
 
         Intent intent = this.getIntent();               //Plockar ut intenten som kommer från mainactivity.
         newlyUpdated = intent.getExtras().getBoolean("new");
 
         locations = loadSP();
-
-
-
-
-        //locations = intent.getParcelableArrayListExtra("locations");    //Placeras i en arraylist.
-
-
-
     }
 
 
 
+    /*
+    Laddar in lagrad data i locations igen.
+     */
 
     public ArrayList<Location> loadSP(){
         System.out.println("Loading...");
@@ -116,12 +117,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             refreshWeather();
         else
             addMarkers();
+
+
         //new WeatherTask().execute();
     }
 
 
     /*
-    Går igenom listan och lägger till en marker för varje position. Klickar man på markören visas antalet sensorer för platsen.
+     * Går igenom listan och lägger till en marker för varje position. Klickar man på markören visas antalet sensorer för platsen.
      */
     public void addMarkers(){
 
@@ -201,7 +204,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         @Override
         protected void onPostExecute(Void result){
            findViewById(R.id.spinner).setVisibility(View.GONE);
-           Toast.makeText(getApplicationContext(), i+" locations were loaded.", Toast.LENGTH_SHORT).show();
+           if(i > 0)
+                Toast.makeText(getApplicationContext(), i+" locations were loaded.", Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -212,6 +216,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         saveSP();
     }
 
+
+    /*
+    Sparar undan data från locations, samt en timestamp så att programmet vet när det senast var aktivt.
+     */
     public void saveSP(){
         SharedPreferences data = getSharedPreferences(LOCATION_DATA, 0);
         SharedPreferences.Editor editor = data.edit();

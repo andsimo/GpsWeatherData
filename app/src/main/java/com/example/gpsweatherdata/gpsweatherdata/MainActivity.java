@@ -1,6 +1,8 @@
 package com.example.gpsweatherdata.gpsweatherdata;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -109,6 +112,7 @@ public class MainActivity extends ActionBarActivity {
         private String driver ="com.mysql.jdbc.Driver";		//Väljer vilken typ av db vi kopplar upp oss mot. Kräver buildpath.
         private String username = "androidAPP";				//Användarnamn satt av Simon.
         private String password = "parans";                 //Lösen satt av Simon.
+        private int error = 0;
        // private int files = 0;
 
 
@@ -152,8 +156,14 @@ public class MainActivity extends ActionBarActivity {
                         locations.add(location);
                     }
                 }
+                error = 0;
                 conn.close();       //stäng kopplingen.
-            } catch(Exception e){
+            }
+            catch(CommunicationsException exc){ //behöver ingen stacktrace för detta fel.
+                error = 1;
+            }
+            catch(Exception e){
+                error = 2;
                 e.printStackTrace();
             }
 
@@ -163,9 +173,37 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Void result){
-            progressDL.setMessage("Storing values");
-            saveSP();
-            progressDL.hide();  //Stänger nedladdningsdialog.
+            progressDL.hide(); //Stänger nedladdningsdialog.
+            if(error == 0)      //felkod 0 = inget fel, spara.
+                saveSP();
+            else if (error == 1) {          //felkod 1 = ingen connection till server => felmeddelande.
+                progressDL.hide();
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("No connection")
+                        .setMessage("Connection to database could not be established")
+                        .setCancelable(true)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //do nothing
+                            }
+                        })
+                        .show();
+            }
+            else{                                               //Felkod något annat => något gick skit.
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("ERROR")
+                        .setMessage("Something went wrong!")
+                        .setCancelable(true)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //do nothing
+                            }
+                        })
+                        .show();
+            }
+
 
         }
 
@@ -182,7 +220,7 @@ public class MainActivity extends ActionBarActivity {
         Gson gson = new Gson();
         String json = gson.toJson(locations);
         editor.putString(LOCATION_LIST, json);
-        editor.putLong("lastTime", System.currentTimeMillis());
+        //editor.putLong("lastTime", System.currentTimeMillis());
         editor.commit();
         System.out.println("Saving...");
     }
