@@ -185,7 +185,7 @@ public class MainActivity extends ActionBarActivity {
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                //do nothing
+                                dialog.cancel();//Do nothing
                             }
                         })
                         .show();
@@ -198,7 +198,7 @@ public class MainActivity extends ActionBarActivity {
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                //do nothing
+                                dialog.cancel();//do nothing
                             }
                         })
                         .show();

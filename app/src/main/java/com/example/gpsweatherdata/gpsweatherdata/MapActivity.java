@@ -18,6 +18,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -37,6 +38,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private GoogleMap map;
     private ArrayList<Location> locations;
+    private ArrayList<MarkerOptions> markerArray;
     private boolean newlyUpdated;
     private long timeStamp;
 
@@ -128,8 +130,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
      */
     public void addMarkers(){
 
+
         if(locations != null) {
             for (Location location : locations) {
+/*
+                MarkerOptions mark = new MarkerOptions()
+                        .position(new LatLng(location.getLat(), location.getLong()))
+                        .title("Sensors: " + location.getNumSensors() +
+                                " \n Cloudiness: " + location.getCloudiness() +
+                                " \n Lat: " + location.getLat() +
+                                " \n Long: " + location.getLong()));
+
+                markerArray.add(mark);
+                map.addMarker(markerArray.get(0));*/  //TESTNING PÅGÅR!
+
+
+
+
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(location.getLat(), location.getLong()))
                         .title("Sensors: " + location.getNumSensors() +
@@ -150,13 +167,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                             " \n Cloudiness: " + location.getCloudiness() +
                             " \n Lat: " + location.getLat() +
                             " \n Long: " + location.getLong())
-                    .icon(BitmapDescriptorFactory.defaultMarker(100-location.getCloudiness())));
-
-
+                    .icon(BitmapDescriptorFactory.defaultMarker(100 - location.getCloudiness())));
         }
-
-
     }
+
 
     /*
     Gör samma som ovan fast med cirklar. Får en orange/gul färg. Radiusen på cirkeln beror på antalet sensors med en faktor 0.2
