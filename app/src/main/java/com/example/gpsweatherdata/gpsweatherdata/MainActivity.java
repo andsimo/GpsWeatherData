@@ -112,7 +112,7 @@ public class MainActivity extends ActionBarActivity {
         private String driver ="com.mysql.jdbc.Driver";		//Väljer vilken typ av db vi kopplar upp oss mot. Kräver buildpath.
         private String username = "androidAPP";				//Användarnamn satt av Simon.
         private String password = "parans";                 //Lösen satt av Simon.
-        private int error = 0;
+        private int error = 0;                              //Felkod. 0 = inget fel, 1 = ingen connection, 2 = något annat fel.
        // private int files = 0;
 
 
