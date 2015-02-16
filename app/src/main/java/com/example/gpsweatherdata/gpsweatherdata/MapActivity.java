@@ -1,5 +1,6 @@
 package com.example.gpsweatherdata.gpsweatherdata;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -15,6 +16,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -36,11 +39,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private static final String LOCATION_DATA = "locationdata";
     private static final String LOCATION_LIST = "locationlist";
 
-    private GoogleMap map;
+    private GoogleMap map; // <------ DENNA LÄGGER MAN TILL MARKERS PÅ...
     private ArrayList<Location> locations;
     private ArrayList<MarkerOptions> markerArray;
     private boolean newlyUpdated;
     private long timeStamp;
+    private MapFragment mapFragment; // <----- DET ÄR DENNA MAN SKALL ÄNDRA INSTÄLLNINGAR PÅ INNAN!
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +53,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         setContentView(R.layout.activity_map);
         findViewById(R.id.spinner).setVisibility(View.GONE);
 
+        initMap();
 
-        GoogleMapOptions mapOptions = new GoogleMapOptions().mapType(GoogleMap.MAP_TYPE_HYBRID).rotateGesturesEnabled(false);
-
-        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-
-        mapFragment.getMapAsync(this);
 
         Intent intent = this.getIntent();               //Plockar ut intenten som kommer från mainactivity.
         newlyUpdated = intent.getExtras().getBoolean("new");
@@ -61,6 +62,35 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         locations = loadSP();
     }
 
+
+    public void initMap(){
+
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+
+
+        if(mapFragment != null){
+        UiSettings mapSettings = mapFragment.getMap().getUiSettings();
+
+        mapSettings.setRotateGesturesEnabled(false);
+        mapSettings.setTiltGesturesEnabled(false);
+        mapSettings.setMyLocationButtonEnabled(true);
+        mapFragment.getMap().setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+        mapFragment.getMap().setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                if(mapFragment.getMap().getMapType() == GoogleMap.MAP_TYPE_NORMAL)
+                    mapFragment.getMap().setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                else
+                    mapFragment.getMap().setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            }
+        });
+        }
+
+        mapFragment.getMapAsync(this);
+
+
+    }
 
 
     /*
@@ -115,7 +145,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap gMap) {
         map = gMap;
-        if(newlyUpdated || (timeStamp + 3600) > (System.currentTimeMillis() / 1000L))
+        if(newlyUpdated || (timeStamp + 3600) > (System.currentTimeMillis() / 1000L))  //Senaste uppdateringen + 1 timme > just nu
             refreshWeather();
         else
             addMarkers();

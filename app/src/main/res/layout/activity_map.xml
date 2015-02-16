@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MapActivity"
+    android:id="@+id/rl_map_activity"
     >
 
 
@@ -15,8 +16,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-
         />
+
 
     <ProgressBar
         android:layout_width="wrap_content"
