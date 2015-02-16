@@ -163,13 +163,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
         if(locations != null) {
             for (Location location : locations) {
-/*
+
+                /*
                 MarkerOptions mark = new MarkerOptions()
                         .position(new LatLng(location.getLat(), location.getLong()))
                         .title("Sensors: " + location.getNumSensors() +
                                 " \n Cloudiness: " + location.getCloudiness() +
                                 " \n Lat: " + location.getLat() +
-                                " \n Long: " + location.getLong()));
+                                " \n Long: " + location.getLong());
 
                 markerArray.add(mark);
                 map.addMarker(markerArray.get(0));*/  //TESTNING PÅGÅR!
@@ -183,6 +184,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                                 " \n Cloudiness: " + location.getCloudiness() +
                                 " \n Lat: " + location.getLat() +
                                 " \n Long: " + location.getLong()));
+
             }
         }
     }
@@ -191,13 +193,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
         if(location != null) {
 
-            map.addMarker(new MarkerOptions()
+            MarkerOptions mark = new MarkerOptions()
                     .position(new LatLng(location.getLat(), location.getLong()))
                     .title("Sensors: " + location.getNumSensors() +
                             " \n Cloudiness: " + location.getCloudiness() +
                             " \n Lat: " + location.getLat() +
-                            " \n Long: " + location.getLong())
-                    .icon(BitmapDescriptorFactory.defaultMarker(100 - location.getCloudiness())));
+                            " \n Long: " + location.getLong());
+
+            if(location.getCloudiness() < 25)
+                    mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            else if(location.getCloudiness() > 50)
+                mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            else if(location.getCloudiness() == 1000)
+                mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+            else
+                mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+
+            map.addMarker(mark);
         }
     }
 
