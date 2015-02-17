@@ -63,11 +63,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     }
 
 
+    /*
+    Initierar kartan med önskade inställningar och skapar en onlongclicklistener som byter mellan maytype hybrid och normal.
+    Startar slutligen en asynctask som faktiskt skapar kartan.
+     */
     public void initMap(){
-
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-
-
         if(mapFragment != null){
         UiSettings mapSettings = mapFragment.getMap().getUiSettings();
 
@@ -88,8 +89,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         }
 
         mapFragment.getMapAsync(this);
-
-
     }
 
 
@@ -200,14 +199,21 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                             " \n Lat: " + location.getLat() +
                             " \n Long: " + location.getLong());
 
-            if(location.getCloudiness() < 25)
+            if(location.getCloudiness() <= 25)
                     mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            else if(location.getCloudiness() > 50)
+            else if(location.getCloudiness() >= 50)
                 mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            else if(location.getCloudiness() == 1000)
-                mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-            else
+            else if(location.getCloudiness() > 25 && location.getCloudiness() < 50)
                 mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+
+            else {
+                mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                mark.title("Sensors: " + location.getNumSensors() +
+                        " \n Cloudiness: ??" +
+                        " \n Lat: " + location.getLat() +
+                        " \n Long: " + location.getLong());
+            }
+
 
             map.addMarker(mark);
         }

@@ -68,8 +68,14 @@ public class WeatherCollector {
         JSONObject jObj = new JSONObject(data);
 
 
-        JSONObject cOjb = getObject("clouds", jObj);
-        location.setCloudiness(getInt("all", cOjb));
+        try {
+            JSONObject cOjb = getObject("clouds", jObj);
+            location.setCloudiness(getInt("all", cOjb));
+        }catch(JSONException e) {
+            e.printStackTrace();
+            location.setCloudiness(1000);
+            System.out.println("KNASIGT CLOUD VALUE!   long  " + location.getLong() +"  lat  " + location.getLat());
+        }
         //System.out.println("location = " + location.getCloudiness());
 
     }
