@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * Klass som hämtar väderdata och kopplar denna till ett location-objekt.
@@ -63,20 +62,25 @@ public class WeatherCollector {
 
 
 
-    public static void getClouds(String data, Location location) throws JSONException {
+    public static void getClouds(String data, Location location){
         //System.out.println("data = " + data);
-        JSONObject jObj = new JSONObject(data);
 
 
         try {
+            JSONObject jObj = new JSONObject(data);
             JSONObject cOjb = getObject("clouds", jObj);
             location.setCloudiness(getInt("all", cOjb));
         }catch(JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             location.setCloudiness(1000);
             System.out.println("KNASIGT CLOUD VALUE!   long  " + location.getLong() +"  lat  " + location.getLat());
         }
         //System.out.println("location = " + location.getCloudiness());
+
+    }
+
+
+    public static void getSunRise(String data, Location location) throws JSONException{
 
     }
 

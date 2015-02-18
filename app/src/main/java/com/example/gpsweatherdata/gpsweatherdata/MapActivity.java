@@ -1,35 +1,35 @@
 package com.example.gpsweatherdata.gpsweatherdata;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+
 
 /*
 Klass som använder google maps v2 api för att skapa ett fragment som vi kan "måla" prickar på.
@@ -45,6 +45,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private boolean newlyUpdated;
     private long timeStamp;
     private MapFragment mapFragment; // <----- DET ÄR DENNA MAN SKALL ÄNDRA INSTÄLLNINGAR PÅ INNAN!
+    private ListView mDrawerList;
+    private String[] mPlanetTitles;
+    private RelativeLayout mRelativeLayout;
 
 
     @Override
@@ -52,7 +55,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         findViewById(R.id.spinner).setVisibility(View.GONE);
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.rl_map_activity);
 
+        initDrawer();
         initMap();
 
 
@@ -89,6 +94,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         }
 
         mapFragment.getMapAsync(this);
+    }
+
+    public void initDrawer(){
+        mPlanetTitles = new String[]{"one", "two", "three"};
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_layout, mPlanetTitles));
+        //mDrawerList.setOnClickListener();
+
     }
 
 
