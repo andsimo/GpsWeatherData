@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -46,19 +45,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private long timeStamp;
     private MapFragment mapFragment; // <----- DET ÄR DENNA MAN SKALL ÄNDRA INSTÄLLNINGAR PÅ INNAN!
     private ListView mDrawerList;
-    private String[] mPlanetTitles;
-    private RelativeLayout mRelativeLayout;
-
+    private String[] mListContent;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         findViewById(R.id.spinner).setVisibility(View.GONE);
-        mRelativeLayout = (RelativeLayout) findViewById(R.id.rl_map_activity);
 
         initDrawer();
         initMap();
+
+
 
 
         Intent intent = this.getIntent();               //Plockar ut intenten som kommer från mainactivity.
@@ -66,6 +66,52 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
         locations = loadSP();
     }
+
+
+    /*
+    Initiates the drawer.
+     */
+    public void initDrawer() {
+        mListContent = new String[]{"one", "two", "three"};
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_layout, mListContent));
+
+        //mDrawerList.setOnClickListener(new DrawerItemClickListener());
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                Toast.makeText(MapActivity.this, "Open", Toast.LENGTH_SHORT).show();
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                Toast.makeText(MapActivity.this, "Close", Toast.LENGTH_SHORT).show();
+                invalidateOptionsMenu();
+
+            }
+
+        };
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        //mDrawerLayout.bringToFront();
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+
+
 
 
     /*
@@ -96,13 +142,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         mapFragment.getMapAsync(this);
     }
 
-    public void initDrawer(){
-        mPlanetTitles = new String[]{"one", "two", "three"};
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_layout, mPlanetTitles));
-        //mDrawerList.setOnClickListener();
 
-    }
 
 
     /*
@@ -161,9 +201,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             refreshWeather();
         else
             addMarkers();
-
-
-        //new WeatherTask().execute();
     }
 
 
@@ -207,16 +244,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
             MarkerOptions mark = new MarkerOptions()
                     .position(new LatLng(location.getLat(), location.getLong()))
-                    .title("Sensors: " + location.getNumSensors() +
+                    .title("sunrise: " + location.getSunrise() + "  sunset: " + location.getSunset() + "  cloudiness: " + location.getCloudiness() + " day: " + location.getTime() );
+                    /*.title("Sensors: " + location.getNumSensors() +
                             " \n Cloudiness: " + location.getCloudiness() +
                             " \n Lat: " + location.getLat() +
-                            " \n Long: " + location.getLong());
+                            " \n Long: " + location.getLong());*/
 
-            if(location.getCloudiness() <= 25)
+            if(location.getCloudiness() <= 25 && location.getTime())
                     mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            else if(location.getCloudiness() >= 50)
+            else if(location.getCloudiness() >= 50 || !location.getTime())
                 mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            else if(location.getCloudiness() > 25 && location.getCloudiness() < 50)
+            else if((location.getCloudiness() > 25) && (location.getCloudiness() < 50) && location.getTime())
                 mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
 
             else {
@@ -235,7 +273,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     /*
     Gör samma som ovan fast med cirklar. Får en orange/gul färg. Radiusen på cirkeln beror på antalet sensors med en faktor 0.2
-     */
+     *//*
     public void addCircles(){
         for(int i = 0; i < locations.size(); i++) {
             map.addCircle(new CircleOptions()
@@ -244,7 +282,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     .strokeColor(Color.rgb(255, 169, 20))
                     .fillColor(Color.rgb(255, 169, 20)));
         }
-    }
+    }*/
 
 
 
@@ -259,15 +297,26 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         @Override
         protected Void doInBackground(Void... params) {
             WeatherCollector wc = new WeatherCollector();
+            long timeNow = System.currentTimeMillis() / 1000L;
 
             if(locations != null) {
                 for (Location location : locations) {
                     if(wc.getWeather(location))
+
+
+                        //location.setDay(timeNow > location.getSunrise() && timeNow < location.getSunset());
+                        //Beräknar ifall det är dagtid
+                        if(timeNow > location.getSunrise() && timeNow < location.getSunset() )
+                            location.setDay(true);
+                        else
+                            location.setDay(false);
+
                         publishProgress(location);
                         i++;
 
                 }
             }
+
             return null;
         }
 

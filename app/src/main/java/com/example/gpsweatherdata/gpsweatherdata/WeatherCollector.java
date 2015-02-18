@@ -20,8 +20,8 @@ public class WeatherCollector {
 
     public boolean getWeather(Location location){
 
-        HttpURLConnection conn = null ;
-        InputStream is = null;
+        HttpURLConnection conn;
+        InputStream is;
 
 
             String lat = "lat="+location.getLat()+"&";
@@ -42,8 +42,9 @@ public class WeatherCollector {
                 while (  (line = br.readLine()) != null ){ //Läser och printar ut resultatet frï¿½n query.
                     buffer.append(line + "\r\n");
                    // System.out.println("Line = " + line);
-                    if(line != null)
                     getClouds(line, location);
+                    getSunTimes(line, location);
+
                 }
 
 
@@ -80,15 +81,21 @@ public class WeatherCollector {
     }
 
 
-    public static void getSunRise(String data, Location location) throws JSONException{
-
+    public static void getSunTimes(String data, Location location) throws JSONException{
+        JSONObject jObj = new JSONObject(data);
+        JSONObject cOjb = getObject("sys", jObj);
+        location.setSunrise(getLong("sunrise", cOjb));
+        location.setSunset(getLong("sunset", cOjb));
     }
 
 
 
     private static JSONObject getObject(String tagName, JSONObject jObj) throws JSONException{
-        JSONObject subObj = jObj.getJSONObject(tagName);
-        return subObj;
+        return jObj.getJSONObject(tagName);
+    }
+
+    private static long getLong(String tagName, JSONObject jObj) throws JSONException {
+        return jObj.getLong(tagName);
     }
 
     private static int getInt(String tagName, JSONObject jObj) throws JSONException{
