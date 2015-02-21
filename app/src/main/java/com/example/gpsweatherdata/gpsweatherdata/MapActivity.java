@@ -250,19 +250,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                             " \n Lat: " + location.getLat() +
                             " \n Long: " + location.getLong());*/
 
-            if(location.getCloudiness() <= 25 && location.getTime())
-                    mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            else if(location.getCloudiness() >= 50 || !location.getTime())
-                mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            else if((location.getCloudiness() > 25) && (location.getCloudiness() < 50) && location.getTime())
-                mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-
-            else {
+            if(!location.getTime()){
                 mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-                mark.title("Sensors: " + location.getNumSensors() +
-                        " \n Cloudiness: ??" +
-                        " \n Lat: " + location.getLat() +
-                        " \n Long: " + location.getLong());
+            }
+            else {
+                if (location.getCloudiness() <= 25)
+                    mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                else if (location.getCloudiness() >= 50)
+                    mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                else if ((location.getCloudiness() > 25) && (location.getCloudiness() < 50))
+                    mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+
+                else {
+                    mark.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                    mark.title("Sensors: " + location.getNumSensors() +
+                            " \n Cloudiness: ??" +
+                            " \n Lat: " + location.getLat() +
+                            " \n Long: " + location.getLong());
+                }
             }
 
 
