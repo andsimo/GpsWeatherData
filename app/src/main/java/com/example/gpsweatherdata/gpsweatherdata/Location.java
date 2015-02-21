@@ -28,6 +28,9 @@ public class Location implements Parcelable, Serializable{
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
         this.sensors = in.readInt();
+        this.day = in.readByte() != 0;
+        this.sunrise = in.readLong();
+        this.sunset = in.readLong();
         this.cloudiness = 1000;
     }
 
@@ -36,6 +39,7 @@ public class Location implements Parcelable, Serializable{
         this.latitude = latitude;
         this.longitude = longitude;
         this.cloudiness = 1000;
+
     }
 
     public void addSensors(){
@@ -90,6 +94,9 @@ public class Location implements Parcelable, Serializable{
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
         dest.writeInt(this.sensors);
+        dest.writeByte((byte)(day ? 1 : 0));    //If boolean == true, byte = 1;
+        dest.writeLong(this.sunrise);
+        dest.writeLong(this.sunset);
     }
 
     public static final Parcelable.Creator<Location> CREATOR
