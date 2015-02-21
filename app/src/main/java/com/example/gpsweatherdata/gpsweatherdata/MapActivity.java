@@ -2,7 +2,6 @@ package com.example.gpsweatherdata.gpsweatherdata;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -20,8 +19,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -142,6 +141,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     mapFragment.getMap().setMapType(GoogleMap.MAP_TYPE_NORMAL);
             }
         });
+
+        mapFragment.getMap().setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener(){
+
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                //DO SOMETHING DIALOG?
+                Toast.makeText(MapActivity.this, "infoClicked", Toast.LENGTH_SHORT).show();
+
+            }
+        });
         }
 
         mapFragment.getMapAsync(this);
@@ -162,7 +171,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         timeStamp = data.getLong("lastTime", 0);
 
 
-        Toast.makeText(this, "Last updated: " + getLastUpdated(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Last updated: " + getTimeLastUpdate(), Toast.LENGTH_LONG).show();
 
         if(data.contains(LOCATION_LIST)){
             String json = data.getString(LOCATION_LIST, "");
@@ -179,10 +188,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     /*
     Returnerar tiden då databasen senast uppdaterades.
      */
-    public String getLastUpdated(){
+    public String getTimeStampUTC(Long time){
+        Date date = new Date(time);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm z");
+        return sdf.format(date);
+    }
+
+    public String getTimeLastUpdate(){
         Date date = new Date(timeStamp);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-
         return sdf.format(date);
     }
 
@@ -229,33 +243,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
         if(locations != null) {
             for (Location location : locations) {
-
                 addMarker(location);
-
-                /*
-                MarkerOptions mark = new MarkerOptions()
-                        .position(new LatLng(location.getLat(), location.getLong()))
-                        .title("Sensors: " + location.getNumSensors() +
-                                " \n Cloudiness: " + location.getCloudiness() +
-                                " \n Lat: " + location.getLat() +
-                                " \n Long: " + location.getLong());
-
-                markerArray.add(mark);
-                map.addMarker(markerArray.get(0));*/  //TESTNING PÅGÅR!
-
-
-
-
-                /*map.addMarker(new MarkerOptions()
-                        .position(new LatLng(location.getLat(), location.getLong()))
-                        .title("Sensors: " + location.getNumSensors() +
-                                " \n Cloudiness: " + location.getCloudiness() +
-                                " \n Lat: " + location.getLat() +
-                                " \n Long: " + location.getLong()));*/
-
-
-
             }
+        }
+        else{
+            Toast.makeText(this, "No locations loaded", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -265,7 +257,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
             MarkerOptions mark = new MarkerOptions()
                     .position(new LatLng(location.getLat(), location.getLong()))
-                    .title("sunrise: " + location.getSunrise() + "  sunset: " + location.getSunset() + "  cloudiness: " + location.getCloudiness() + " day: " + location.getTime() );
+                    .title("Location")
+                    .snippet("Daytime: " + location.getTime() + "\nSunrise: " + getTimeStampUTC(location.getSunrise()) + "  Sunset: " + getTimeStampUTC(location.getSunset()) +
+                    " \nLat: " + location.getLat() + "\nLong: " + location.getLong() + "\nCloudiness: " + location.getCloudiness());
+                    //.title("sunrise: " + location.getSunrise() + "  sunset: " + location.getSunset() + "  cloudiness: " + location.getCloudiness() + " day: " + location.getTime());
                     /*.title("Sensors: " + location.getNumSensors() +
                             " \n Cloudiness: " + location.getCloudiness() +
                             " \n Lat: " + location.getLat() +
@@ -291,24 +286,21 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 }
             }
 
-
+           // markerArray.add(mark);
             map.addMarker(mark);
+
         }
     }
 
 
-    /*
-    Gör samma som ovan fast med cirklar. Får en orange/gul färg. Radiusen på cirkeln beror på antalet sensors med en faktor 0.2
-     *//*
-    public void addCircles(){
-        for(int i = 0; i < locations.size(); i++) {
-            map.addCircle(new CircleOptions()
-                    .center(new LatLng(locations.get(i).getLat(), locations.get(i).getLong()))
-                    .radius(10000 + 10000 * 0.2* locations.get(i).getNumSensors())
-                    .strokeColor(Color.rgb(255, 169, 20))
-                    .fillColor(Color.rgb(255, 169, 20)));
+    private void renderMarkerArray(){
+        //map
+        mapFragment.getMap().clear();
+        for(MarkerOptions mark : markerArray){
+            mapFragment.getMap().addMarker(mark);
         }
-    }*/
+    }
+
 
 
 
@@ -388,6 +380,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     public void refreshWeather(){
         map.clear();
+       // markerArray.clear();
         new WeatherTask().execute();
     }
 
