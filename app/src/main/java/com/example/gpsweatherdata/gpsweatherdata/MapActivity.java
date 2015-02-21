@@ -27,7 +27,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 /*
@@ -55,6 +57,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         setContentView(R.layout.activity_map);
         findViewById(R.id.spinner).setVisibility(View.GONE);
 
+        locations = loadSP();
+
         initDrawer();
         initMap();
 
@@ -64,7 +68,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         Intent intent = this.getIntent();               //Plockar ut intenten som kommer från mainactivity.
         newlyUpdated = intent.getExtras().getBoolean("new");
 
-        locations = loadSP();
+
     }
 
 
@@ -126,6 +130,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         mapSettings.setRotateGesturesEnabled(false);
         mapSettings.setTiltGesturesEnabled(false);
         mapSettings.setMyLocationButtonEnabled(true);
+        mapSettings.setZoomControlsEnabled(true);
         mapFragment.getMap().setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         mapFragment.getMap().setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
@@ -154,7 +159,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         ArrayList<Location> tempList;
         SharedPreferences data = getSharedPreferences(LOCATION_DATA, 0);
 
-        timeStamp = data.getLong("time", 0);
+        timeStamp = data.getLong("lastTime", 0);
+
+
+        Toast.makeText(this, "Last updated: " + getLastUpdated(), Toast.LENGTH_LONG).show();
 
         if(data.contains(LOCATION_LIST)){
             String json = data.getString(LOCATION_LIST, "");
@@ -166,6 +174,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             return null;
         }
         return tempList;
+    }
+
+    /*
+    Returnerar tiden då databasen senast uppdaterades.
+     */
+    public String getLastUpdated(){
+        Date date = new Date(timeStamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+
+        return sdf.format(date);
     }
 
 
@@ -197,7 +215,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap gMap) {
         map = gMap;
-        if(newlyUpdated || (timeStamp + 3600) > (System.currentTimeMillis() / 1000L))  //Senaste uppdateringen + 1 timme > just nu
+        if(newlyUpdated || (timeStamp + 3600) < (System.currentTimeMillis() / 1000L))  //Senaste uppdateringen + 1 timme > just nu
             refreshWeather();
         else
             addMarkers();
@@ -209,9 +227,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
      */
     public void addMarkers(){
 
-
         if(locations != null) {
             for (Location location : locations) {
+
+                addMarker(location);
 
                 /*
                 MarkerOptions mark = new MarkerOptions()
@@ -227,12 +246,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
 
 
-                map.addMarker(new MarkerOptions()
+                /*map.addMarker(new MarkerOptions()
                         .position(new LatLng(location.getLat(), location.getLong()))
                         .title("Sensors: " + location.getNumSensors() +
                                 " \n Cloudiness: " + location.getCloudiness() +
                                 " \n Lat: " + location.getLat() +
-                                " \n Long: " + location.getLong()));
+                                " \n Long: " + location.getLong()));*/
+
+
 
             }
         }
