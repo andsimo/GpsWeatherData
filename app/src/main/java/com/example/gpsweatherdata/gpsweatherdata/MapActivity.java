@@ -22,6 +22,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -67,6 +71,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private ProgressDialog progressDL;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +86,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         initDrawer();
         initMap();
         initProgressDialog();
+        initShowcase();
+
+    }
+
+
+    //**********************TUTORIAL **********************//
+
+    public void initShowcase(){
+        mDrawerLayout.openDrawer(Gravity.START);
+        //ViewTarget target = new ViewTarget(R.id.left_drawer, this);
+        ShowcaseView sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(mDrawerList)).setContentText("title").setContentText("text").build();
+
+
+
     }
 
 
@@ -90,6 +109,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     Initiates the drawer.
      */
     public void initDrawer() {
+
         mListContent = getResources().getStringArray(R.array.drawer_menu);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
