@@ -83,6 +83,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
 
 
+
         initDrawer();
         initMap();
         initProgressDialog();
