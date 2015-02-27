@@ -26,6 +26,8 @@ public class Cities extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cities);
 
+
+
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
 
