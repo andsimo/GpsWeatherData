@@ -69,6 +69,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ProgressDialog progressDL;
+    private ShowcaseView sv;
 
 
 
@@ -87,7 +88,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         initDrawer();
         initMap();
         initProgressDialog();
-        initShowcase();
+        //initShowcase();
 
     }
 
@@ -95,9 +96,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     //**********************TUTORIAL **********************//
 
     public void initShowcase(){
-        mDrawerLayout.openDrawer(Gravity.START);
+        //mDrawerLayout.openDrawer(Gravity.START);
         //ViewTarget target = new ViewTarget(R.id.left_drawer, this);
-        ShowcaseView sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(mDrawerList)).setContentText("title").setContentText("text").build();
+        sv = new ShowcaseView.Builder(this, true).setTarget(Target.NONE).setContentTitle("Menu").setContentText("Slide from left to right to\n open the navgation menu").build();
+        //sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(mDrawerLayout.getChildAt(0).findViewById(R.id.list_item))).setContentTitle("Menu").setContentText("Slide from left to right to\n open the navgation menu").build();
+        sv.setAlpha(90f);
+        sv.setHideOnTouchOutside(true);
 
 
 
@@ -196,7 +200,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     break;
                 case 1:
                     //Hämtar nya locations.
-                    new DBConnector().execute();
+                    refreshWeather();
                     break;
                 case 2://Parans Website
 
@@ -246,7 +250,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
    Koppling mot databsen måste ske i bakgrunden med hjälp av AsyncTask för att inte låsa hela GUI't.
    Fundering... byta ut mot intentservice/resultreceiver fördel: kan fortsätta söka efter filer även om aktiviteten byts.
     */
-    private class DBConnector extends AsyncTask<Void, Void, Void> {
+    private class DBConnector extends AsyncTask<Void, Location, Void> {
 
         private String url = "jdbc:mysql://46.239.117.17:3306/";	//Just nu endast lokalt. min IP 46.239.117.17    localhost
         private String DbName = "GVS";						//Schemats namn satt av Simon
@@ -255,6 +259,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         private String password = "parans";                 //Lösen satt av Simon.
         private int error = 0;                              //Felkod. 0 = inget fel, 1 = ingen connection, 2 = något annat fel.
         private ArrayList<Location> tempLocations;
+        private int i = 0;
         // private int files = 0;
 
 
@@ -262,6 +267,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         @Override
         protected void onPreExecute(){
             //locations.clear(); //Nollställer hashmapen så att inga dubletter skapas ifall man uppdaterar filerna fler ggr.
+            map.clear();
             tempLocations = new ArrayList<>();
             progressDL.show();  //Visar nedladdningsdialog.
 
@@ -274,8 +280,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + DbName, username, password);
 
+                long timeNow = System.currentTimeMillis() / 1000L;
+
                 Statement st = conn.createStatement();
-                ResultSet result = st.executeQuery("SELECT * FROM locations");          //Skapar ett statement och hämtar allt från locationstable i databasen.
+                ResultSet result = st.executeQuery("SELECT * FROM getweather");          //Skapar ett statement och hämtar allt från locationstable i databasen.
 
                 while(result.next()){       //Hämtar ut rad för rad och sparar undan datan.
 
@@ -283,21 +291,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     //String fileName = result.getString("fileName");
                     Double latitude = result.getDouble("latitude");
                     Double longitude = result.getDouble("longitude");
+                    int cloudiness = result.getInt("cloudiness");
+                    long sunrise = Long.parseLong(result.getString("sunrise"));
+                    long sunset = Long.parseLong(result.getString("sunset"));
+                    int sensors = result.getInt("sensors");
 
-                    boolean found = false;          //Flagga för att se ifall positionen redan finns i listan
 
-                    for(int i = 0; i < tempLocations.size(); i++){          //Går igenom listan och kollar ifall positionen redan finns.
-                        Location compLoc = tempLocations.get(i);
+                    Location location = new Location(latitude, longitude, sensors, cloudiness, sunrise, sunset);
+                    tempLocations.add(location);
 
-                        if(compLoc.getLat() == latitude && compLoc.getLong() == longitude) {
-                            tempLocations.get(i).addSensors();          //Ifall den gör det så öka antalet sensorer och sätt flaggan till true så att inte en dublett skapas.
-                            found = true;
-                        }
-                    }
-                    if(!found) {        //Hittades ingen befintlig sensor så läggs en ny plats till i listan.
-                        Location location = new Location(latitude, longitude);
-                        tempLocations.add(location);
-                    }
+                    if(timeNow > location.getSunrise() && timeNow < location.getSunset() )
+                        location.setDay(true);
+                    else
+                        location.setDay(false);
+
+                    publishProgress(location);
+                    i++;
+
+
+
                 }
                 error = 0;
                 conn.close();       //stäng kopplingen.
@@ -313,13 +325,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             return null;
         }
 
+        @Override
+        protected void onProgressUpdate(Location... progress){
+            addMarker(progress[0]);
+        }
+
 
         @Override
         protected void onPostExecute(Void result){
             progressDL.hide(); //Stänger nedladdningsdialog.
             if(error == 0) {      //felkod 0 = visa på kartan.
                 locations = tempLocations;
-                refreshWeather();
+
             }
             else if (error == 1) {          //felkod 1 = ingen connection till server => felmeddelande.
                 progressDL.hide();
@@ -523,7 +540,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     }
 
 
-    private class WeatherTask extends AsyncTask<Void, Location, Void>{
+   private class WeatherTask extends AsyncTask<Void, Location, Void>{
 
         int i = 0;
         @Override
@@ -579,7 +596,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     public void refreshWeather(){
         map.clear();
        // markerArray.clear();
-        new WeatherTask().execute();
+        //new WeatherTask().execute();
+        new DBConnector().execute();
     }
 
 
