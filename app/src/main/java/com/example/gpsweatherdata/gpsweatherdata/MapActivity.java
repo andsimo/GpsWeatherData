@@ -540,58 +540,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     }
 
 
-   private class WeatherTask extends AsyncTask<Void, Location, Void>{
-
-        int i = 0;
-        @Override
-        protected void onPreExecute(){
-            findViewById(R.id.spinner).setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            WeatherCollector wc = new WeatherCollector();
-            long timeNow = System.currentTimeMillis() / 1000L;
-
-            if(locations != null) {
-                for (Location location : locations) {
-                    if(wc.getWeather(location))
-
-
-                        //location.setDay(timeNow > location.getSunrise() && timeNow < location.getSunset());
-                        //Beräknar ifall det är dagtid
-                        if(timeNow > location.getSunrise() && timeNow < location.getSunset() )
-                            location.setDay(true);
-                        else
-                            location.setDay(false);
-
-                        publishProgress(location);
-                        i++;
-
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Location... progress){
-            addMarker(progress[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Void result){
-           findViewById(R.id.spinner).setVisibility(View.GONE);
-           if(i > 0)
-                Toast.makeText(getApplicationContext(), i+" locations were loaded.", Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
-
-   /* public void updateWeather(View v){
-        refreshWeather();
-    }*/
 
     public void refreshWeather(){
         map.clear();
