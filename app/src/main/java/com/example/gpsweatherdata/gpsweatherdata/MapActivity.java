@@ -288,10 +288,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     Double latitude = result.getDouble("latitude");
                     Double longitude = result.getDouble("longitude");
                     int cloudiness = result.getInt("cloudiness");
-                    long sunrise = Long.parseLong(result.getString("sunrise"));
-                    long sunset = Long.parseLong(result.getString("sunset"));
                     int sensors = result.getInt("sensors");
-
+                    long sunrise = parseToLong(result.getString("sunrise"));
+                    long sunset = parseToLong(result.getString("sunset"));
 
                     Location location = new Location(latitude, longitude, sensors, cloudiness, sunrise, sunset);
                     tempLocations.add(location);
@@ -331,7 +330,26 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         protected void onPostExecute(Void result){
             progressDL.hide(); //Stänger nedladdningsdialog.
             if(error == 0) {      //felkod 0 = visa på kartan.
-                locations = tempLocations;
+                if(tempLocations.size() == 0 && locations.size() > 0){
+                    new AlertDialog.Builder(MapActivity.this)
+                            .setTitle("No connections in database!")
+                            .setMessage("Database is empty do you wish to remove exisiting markers?")
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_email)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    locations = tempLocations;
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();            //Do nothing
+                                }
+                            })
+                            .show();
+                }
+                else
+                    locations = tempLocations;
 
             }
             else if (error == 1) {          //felkod 1 = ingen connection till server => felmeddelande.
@@ -366,9 +384,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         }
 
 
+    }
 
-
-
+    private long parseToLong(String str){
+        try{
+            return Long.parseLong(str);
+        }catch (NumberFormatException e){
+            return 0;
+        }
     }
 
     private void initProgressDialog(){
