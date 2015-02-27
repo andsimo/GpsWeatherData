@@ -16,7 +16,6 @@
 
     <string-array name="drawer_menu">
         <item>Update</item>
-        <item>Load Locations</item>
         <item>Go to Parans Website</item>
     </string-array>
 

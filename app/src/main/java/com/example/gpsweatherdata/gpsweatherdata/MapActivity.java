@@ -198,11 +198,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 case 0://Update
                     refreshWeather();
                     break;
-                case 1:
-                    //Hämtar nya locations.
-                    refreshWeather();
-                    break;
-                case 2://Parans Website
+                case 1://Parans Website
 
                     new AlertDialog.Builder(MapActivity.this)
                             .setTitle("Http://www.Parans.com")
