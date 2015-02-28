@@ -28,7 +28,7 @@ public class Cities extends Activity {
 
 
 
-        // get the listview
+        // get the listview ss
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
 
         // preparing list data

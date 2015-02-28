@@ -29,7 +29,7 @@ public class Menu_countries extends ListActivity{
 
         lv = (ListView) findViewById(android.R.id.list);
 
-        // storing string resources into Array
+        // storing string resources into Array brahejhej
         locations = new ArrayList<String>();
 
         Bundle extras = getIntent().getExtras();
