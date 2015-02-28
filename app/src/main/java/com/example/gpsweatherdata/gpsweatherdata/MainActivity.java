@@ -5,56 +5,61 @@ import android.content.Intent;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 
 public class MainActivity extends ActionBarActivity {
 
+    private static final ScheduledExecutorService worker =
+            Executors.newSingleThreadScheduledExecutor();
+
+    private boolean clicked;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Runnable task = new Runnable(){
+
+            @Override
+            public void run() {
+
+                if(!clicked)
+                    showMap();
+            }
+        };
+
+
+        worker.schedule(task, 1, TimeUnit.SECONDS);
+
+
+
     }
 
     @Override
     protected void onResume(){
         super.onResume();
+        clicked = false;
     }
 
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
-    public void showMap(View view){
+    public void showMap(){
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
+    }
 
-
+    public void showMap(View v){
+        clicked = true;
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
     }
 
 
