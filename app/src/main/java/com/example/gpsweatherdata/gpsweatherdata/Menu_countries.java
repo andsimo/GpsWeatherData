@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+
 import android.app.ListActivity;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class Menu_countries extends ListActivity{
     private ArrayList<String> locations;
     private ListView lv;
     private ArrayAdapter<String> arrayAdapter;
+    String myitem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,25 @@ public class Menu_countries extends ListActivity{
         lv.setAdapter(arrayAdapter);
 
 
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                Object item = lv.getItemAtPosition(position);
+                myitem = item.toString();
+                startaAct(myitem);
+            }
+        });
+
+
+    }
+
+
+    public void startaAct(String myitem){
+            if(myitem == "Sweden"){
+            Intent intent = new Intent(this, Cities.class);
+            startActivity(intent);
+            }
 
     }
 
