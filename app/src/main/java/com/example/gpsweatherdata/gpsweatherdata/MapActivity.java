@@ -216,7 +216,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
 
 
-                    fm.beginTransaction().replace(R.id.content_frame, continentFragment).commit();
+                    fm.beginTransaction().add(R.id.content_frame, continentFragment).commit();
 
 
                     break;
@@ -261,6 +261,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         }
         else if(continentFragment.isVisible()){
             fm.beginTransaction().remove(continentFragment).commit();
+
+
+
+
         }
         else
             super.onBackPressed();
