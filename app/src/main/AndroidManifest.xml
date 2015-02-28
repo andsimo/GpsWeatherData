@@ -43,7 +43,17 @@
             android:label="Continent Menu"
             android:configChanges="orientation|keyboardHidden|screenSize">
             </activity>
+        <activity
+            android:name=".Menu_countries"
+            android:label="Continent Menu"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
 
+        <activity
+            android:name=".Cities"
+            android:label="Continent Menu"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
 
 
         <meta-data
@@ -52,7 +62,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDeKZCQcG1P1OxlM1mzHMcmmJ8gTpMxZhQ" />
+            android:value="AIzaSyDZEn7oIUKK_d79RSvxPCkpyhNxEO4seY0" />
 
 
 
