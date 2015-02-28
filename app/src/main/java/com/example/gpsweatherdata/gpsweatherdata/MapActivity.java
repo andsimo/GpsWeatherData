@@ -85,7 +85,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         setContentView(R.layout.activity_map);
         findViewById(R.id.spinner).setVisibility(View.GONE);
         locations = loadSP();
-        continentFragment = new ContinentFragment();
+        continentFragment = new ContFragment();
         fm = getFragmentManager();
 
 
