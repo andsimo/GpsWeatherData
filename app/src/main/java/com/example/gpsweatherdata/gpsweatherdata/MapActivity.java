@@ -75,6 +75,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private ShowcaseView sv;
     private int value;
 
+    private Fragment continentFragment;
+    private FragmentManager fm;
 
 
     @Override
@@ -83,6 +85,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         setContentView(R.layout.activity_map);
         findViewById(R.id.spinner).setVisibility(View.GONE);
         locations = loadSP();
+        continentFragment = new ContinentFragment();
+        fm = getFragmentManager();
 
 
 
@@ -206,13 +210,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 case 1:         //menu_cont
                     /*Intent intent = new Intent(this, Menu_Cont.class);
                     startActivity(intent);*/
-                    Fragment fragment = new continentFragment();
+
                     Bundle bundle = new Bundle();
-                    fragment.setArguments(bundle);
+                    continentFragment.setArguments(bundle);
 
-                    FragmentManager fm = getFragmentManager();
 
-                    fm.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                    fm.beginTransaction().replace(R.id.content_frame, continentFragment).commit();
 
 
                     break;
@@ -254,6 +258,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     public void onBackPressed(){
         if(mDrawerLayout.isDrawerOpen(mDrawerList)){
             mDrawerLayout.closeDrawer(Gravity.LEFT);
+        }
+        else if(continentFragment.isVisible()){
+            fm.beginTransaction().remove(continentFragment).commit();
         }
         else
             super.onBackPressed();
