@@ -1,6 +1,7 @@
 package com.example.gpsweatherdata.gpsweatherdata;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import android.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -200,8 +203,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     break;
 
                 case 1:         //menu_cont
-                    Intent intent = new Intent(this, Menu_Cont.class);
-                    startActivity(intent);
+                    /*Intent intent = new Intent(this, Menu_Cont.class);
+                    startActivity(intent);*/
+                    Fragment fragment = new continentFragment();
+                    Bundle bundle = new Bundle();
+                    fragment.setArguments(bundle);
+
+                    FragmentManager fm = getFragmentManager();
+
+                    fm.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
 
                     break;
 

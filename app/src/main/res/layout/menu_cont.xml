@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BABABA">
+    android:background="#66000000"
+    >
 
 
     <ImageView
@@ -19,7 +20,7 @@
         android:text="Choose continent"
         android:textSize="22dp"
         android:id="@+id/textView"
-        android:textColor="#111111"
+        android:textColor="#FFFFFF"
         android:layout_above="@+id/northamerica"
         android:layout_alignLeft="@+id/northamerica"
         android:layout_alignStart="@+id/northamerica"
