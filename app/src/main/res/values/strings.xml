@@ -15,6 +15,7 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string-array name="drawer_menu">
+        <item>Map</item>
         <item>Update</item>
         <item>Navigate Locations</item>
         <item>Go to Parans Website</item>

@@ -203,11 +203,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private void selectItem(int position) {
 
             switch(position) {
-                case 0://Update
+                case 0:     //Map
+                    if(continentFragment.isVisible())
+                        fm.beginTransaction().remove(continentFragment).commit();
+                    break;
+
+                case 1://Update
                     refreshWeather();
                     break;
 
-                case 1:         //menu_cont
+                case 2:         //menu_cont
                     /*Intent intent = new Intent(this, Menu_Cont.class);
                     startActivity(intent);*/
 
@@ -221,7 +226,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
                     break;
 
-                case 2://Parans Website
+                case 3://Parans Website
 
                     new AlertDialog.Builder(MapActivity.this)
                             .setTitle("Http://www.Parans.com")
@@ -379,6 +384,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                             .show();
                 }
                 else
+                    locations.clear();
                     locations = tempLocations;
 
             }
