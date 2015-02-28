@@ -11,8 +11,6 @@ import java.util.ArrayList;
 public class Menu_Cont extends Activity{
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

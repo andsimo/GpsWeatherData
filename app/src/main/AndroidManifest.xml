@@ -38,6 +38,13 @@
             android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
+        <activity
+            android:name=".Menu_Cont"
+            android:label="Continent Menu"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+            </activity>
+
+
 
         <meta-data
             android:name="com.google.android.gms.version"

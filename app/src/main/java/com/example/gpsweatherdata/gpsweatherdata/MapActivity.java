@@ -198,7 +198,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 case 0://Update
                     refreshWeather();
                     break;
-                case 1://Parans Website
+
+                case 1:         //menu_cont
+                    Intent intent = new Intent(this, Menu_Cont.class);
+                    startActivity(intent);
+
+                    break;
+
+                case 2://Parans Website
 
                     new AlertDialog.Builder(MapActivity.this)
                             .setTitle("Http://www.Parans.com")
