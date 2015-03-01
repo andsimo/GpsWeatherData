@@ -33,36 +33,50 @@ public class Cities extends Activity {
         // get the listview ss
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
 
-        // preparing list data
-        prepareListData();
+        Intent intent = getIntent();
+        country = intent.getExtras().getString("country");
+        if(country.equalsIgnoreCase("Bosnia and Herzegovina"))
+            prepareListData(1);
+        else if(country.equalsIgnoreCase("Albania"))
+            prepareListData(2);
+        else if(country.equalsIgnoreCase("Armenia"))
+            prepareListData(3);
+        else
+        {}
+
+       // preparing list data
+        //prepareListData();
 
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
-
-        Intent intent = getIntent();
-        country = intent.getExtras().getString("country");
     }
 
     /*
      * Preparing the list data
      */
-    private void prepareListData() {
+    private void prepareListData(int i) {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
 
         // Adding child data    //Här ska sedan städers namn i det valda landet listas.
-        listDataHeader.add("" + country);
-        listDataHeader.add("Göteborg");
-        listDataHeader.add("Stockholm");
+        if(i == 1)
+        listDataHeader.add("Bosnien");
+        else if(i == 2)
+        listDataHeader.add("Albania");
+        else if(i ==3)
+        listDataHeader.add("Armenia");
+
+
+        /*
         listDataHeader.add("Malmö");
         listDataHeader.add("Västerås");
         listDataHeader.add("Örebro");
         listDataHeader.add("Mölndal");
         listDataHeader.add("Umeå");
         listDataHeader.add("Växjö");
-        listDataHeader.add("Kalmar");
+        listDataHeader.add("Kalmar");*/
 
 
 
@@ -82,4 +96,5 @@ public class Cities extends Activity {
         listDataChild.put(listDataHeader.get(1), nowShowing);
         listDataChild.put(listDataHeader.get(2), comingSoon);
     }
+
 }

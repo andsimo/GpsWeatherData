@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Menu_Cont extends Activity{
 
-    String cont;
+    Integer cont;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +22,7 @@ public class Menu_Cont extends Activity{
     }
 
     public void showNA(View v){
-        //cont = "NorthAM";
+        cont = 1;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", new String("NorthAM"));
         startActivity(intent);
@@ -31,7 +31,7 @@ public class Menu_Cont extends Activity{
     }
 
     public void showEU(View v){
-        cont = "EU";
+        cont = 2;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", cont);
         startActivity(intent);
@@ -40,7 +40,7 @@ public class Menu_Cont extends Activity{
     }
 
     public void showAS(View v){
-        cont = "Asia";
+        cont = 3;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", cont);
         startActivity(intent);
@@ -50,7 +50,7 @@ public class Menu_Cont extends Activity{
 
 
     public void showSA(View v){
-        cont = "SouthAM";
+        cont = 4;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", cont);
         startActivity(intent);
@@ -59,7 +59,7 @@ public class Menu_Cont extends Activity{
     }
 
     public void showAF(View v){
-        cont = "Africa";
+        cont = 5;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", cont);
         startActivity(intent);
@@ -69,7 +69,7 @@ public class Menu_Cont extends Activity{
 
 
     public void showAUS(View v){
-        cont = "Australia";
+        cont = 6;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", cont);
         startActivity(intent);

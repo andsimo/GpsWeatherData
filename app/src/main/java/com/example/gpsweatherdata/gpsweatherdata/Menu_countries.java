@@ -39,20 +39,20 @@ public class Menu_countries extends ListActivity{
 
 
         Intent intent = getIntent();
-        String cont = intent.getExtras().getString("continent");
-        System.out.println(""+ cont);
-            /*if(cont.equalsIgnoreCase("NorthAM"))
-                setCountries("NorthAM");
-            else if(cont.equalsIgnoreCase("EU"))
-                    setCountries("Europe");
-            else if(cont.equalsIgnoreCase("Asia"))
-                    setCountries("Asia");
-            else if(cont.equalsIgnoreCase("SouthAM"))
-                    setCountries("SouthAM");
-            else if(cont.equalsIgnoreCase("Africa"))
-                    setCountries("Africa");
-            else if(cont.equalsIgnoreCase("Australia"))
-                    setCountries("Australia");*/
+        Integer cont = intent.getExtras().getInt("continent");
+        System.out.println(""+cont); System.out.println(""+cont); System.out.println(""+cont);
+        if(cont.equals(1))
+                setCountries("NorthAM".toString());
+            else if(cont.equals(2))
+                    setCountries("Europe".toString());
+            else if(cont.equals(3))
+                    setCountries("Asia".toString());
+            else if(cont.equals(4))
+                    setCountries("SouthAM".toString());
+            else if(cont.equals(5))
+                    setCountries("Africa".toString());
+            else if(cont.equals(6))
+                    setCountries("Australia".toString());
 
 
 
@@ -70,11 +70,11 @@ public class Menu_countries extends ListActivity{
 
     }
 
-    public void setCountries(String cont){
+    public void setCountries(String continent){
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                countries.get("" + cont));
+                countries.get("" + continent));
 
         lv.setAdapter(arrayAdapter);
     }
@@ -82,6 +82,7 @@ public class Menu_countries extends ListActivity{
     public void startAct(String pick){
             Intent intent = new Intent(this, Cities.class);
             intent.putExtra("country", pick);
+        System.out.println(""+pick);System.out.println(""+pick);System.out.println(""+pick);System.out.println(""+pick);
             startActivity(intent);
     }
 
