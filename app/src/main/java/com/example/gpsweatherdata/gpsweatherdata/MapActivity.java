@@ -49,6 +49,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 
 /*
@@ -301,17 +302,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             map.clear();
             tempLocations = new ArrayList<>();
             progressDL.show();  //Visar nedladdningsdialog.
-
         }
 
 
         @Override
         protected Void doInBackground(Void... params) {
+            long timeNow = System.currentTimeMillis() / 1000L;
+
+
             try{
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + DbName, username, password);
 
-                long timeNow = System.currentTimeMillis() / 1000L;
 
                 Statement st = conn.createStatement();
                 ResultSet result = st.executeQuery("SELECT * FROM getweather");          //Skapar ett statement och hämtar allt från locationstable i databasen.
@@ -330,15 +332,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     Location location = new Location(latitude, longitude, sensors, cloudiness, sunrise, sunset);
                     tempLocations.add(location);
 
-                    if(timeNow > location.getSunrise() && timeNow < location.getSunset() )
+                    if(timeNow >= location.getSunrise() && timeNow <= location.getSunset() )
                         location.setDay(true);
                     else
                         location.setDay(false);
 
                     publishProgress(location);
                     i++;
-
-
 
                 }
                 error = 0;
@@ -444,7 +444,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     Returnerar tiden då databasen senast uppdaterades.
      */
     public String getTimeStampUTC(Long time){
-        Date date = new Date(time);
+        Date date = new Date(time * 1000);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm z");
         return sdf.format(date);
     }
