@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Menu_Cont extends Activity{
 
-    int value;
+    String cont;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,27 +22,27 @@ public class Menu_Cont extends Activity{
     }
 
     public void showNA(View v){
-        value = 1;
+        //cont = "NorthAM";
         Intent intent = new Intent(this, Menu_countries.class);
-        intent.putExtra("continent", value);
+        intent.putExtra("continent", new String("NorthAM"));
         startActivity(intent);
 
 
     }
 
     public void showEU(View v){
-        value = 2;
+        cont = "EU";
         Intent intent = new Intent(this, Menu_countries.class);
-        intent.putExtra("continent", value);
+        intent.putExtra("continent", cont);
         startActivity(intent);
 
 
     }
 
     public void showAS(View v){
-        value = 3;
+        cont = "Asia";
         Intent intent = new Intent(this, Menu_countries.class);
-        intent.putExtra("continent", value);
+        intent.putExtra("continent", cont);
         startActivity(intent);
 
 
@@ -50,18 +50,18 @@ public class Menu_Cont extends Activity{
 
 
     public void showSA(View v){
-        value = 4;
+        cont = "SouthAM";
         Intent intent = new Intent(this, Menu_countries.class);
-        intent.putExtra("continent", value);
+        intent.putExtra("continent", cont);
         startActivity(intent);
 
 
     }
 
     public void showAF(View v){
-        value = 5;
+        cont = "Africa";
         Intent intent = new Intent(this, Menu_countries.class);
-        intent.putExtra("continent", value);
+        intent.putExtra("continent", cont);
         startActivity(intent);
 
 
@@ -69,9 +69,9 @@ public class Menu_Cont extends Activity{
 
 
     public void showAUS(View v){
-        value = 6;
+        cont = "Australia";
         Intent intent = new Intent(this, Menu_countries.class);
-        intent.putExtra("continent", value);
+        intent.putExtra("continent", cont);
         startActivity(intent);
 
 

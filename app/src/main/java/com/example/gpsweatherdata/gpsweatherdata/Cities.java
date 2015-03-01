@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -20,6 +21,7 @@ public class Cities extends Activity {
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+    String country;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,9 @@ public class Cities extends Activity {
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
+
+        Intent intent = getIntent();
+        country = intent.getExtras().getString("country");
     }
 
     /*
@@ -48,6 +53,7 @@ public class Cities extends Activity {
         listDataChild = new HashMap<String, List<String>>();
 
         // Adding child data    //Här ska sedan städers namn i det valda landet listas.
+        listDataHeader.add("" + country);
         listDataHeader.add("Göteborg");
         listDataHeader.add("Stockholm");
         listDataHeader.add("Malmö");
