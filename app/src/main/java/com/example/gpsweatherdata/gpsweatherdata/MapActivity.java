@@ -384,7 +384,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                             .show();
                 }
                 else
-                    locations.clear();
+                    //locations.clear();
                     locations = tempLocations;
 
             }
