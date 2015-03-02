@@ -211,14 +211,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 case 2:         //menu_cont
                     /*Intent intent = new Intent(this, Menu_Cont.class);
                     startActivity(intent);*/
+                    if(!continentFragment.isVisible()) {
+                        Bundle bundle = new Bundle();
+                        continentFragment.setArguments(bundle);
 
-                    Bundle bundle = new Bundle();
-                    continentFragment.setArguments(bundle);
 
-
-
-                    fm.beginTransaction().add(R.id.content_frame, continentFragment).commit();
-
+                        fm.beginTransaction().add(R.id.content_frame, continentFragment).commit();
+                    }
 
                     break;
 
@@ -660,6 +659,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
 
     public void showNA(View v){
+        if(continentFragment.isVisible())
+            fm.beginTransaction().remove(continentFragment).commit();
         value = 1;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", value);
@@ -669,6 +670,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     }
 
     public void showEU(View v){
+        if(continentFragment.isVisible())
+            fm.beginTransaction().remove(continentFragment).commit();
         value = 2;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", value);
@@ -678,6 +681,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     }
 
     public void showAS(View v){
+        if(continentFragment.isVisible())
+            fm.beginTransaction().remove(continentFragment).commit();
         value = 3;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", value);
@@ -688,6 +693,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
 
     public void showSA(View v){
+        if(continentFragment.isVisible())
+            fm.beginTransaction().remove(continentFragment).commit();
         value = 4;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", value);
@@ -697,6 +704,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     }
 
     public void showAF(View v){
+        if(continentFragment.isVisible())
+            fm.beginTransaction().remove(continentFragment).commit();
         value = 5;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", value);
@@ -707,6 +716,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
 
     public void showAUS(View v){
+        if(continentFragment.isVisible())
+            fm.beginTransaction().remove(continentFragment).commit();
         value = 6;
         Intent intent = new Intent(this, Menu_countries.class);
         intent.putExtra("continent", value);
