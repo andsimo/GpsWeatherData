@@ -2,21 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gpsweatherdata.gpsweatherdata" >
 
-
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <!-- not req, but recommended -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true"/>
-
-
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -27,7 +24,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:noHistory="true"
-            android:theme="@android:style/Theme.NoTitleBar">
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,39 +33,36 @@
         </activity>
         <activity
             android:name=".MapActivity"
-            android:label="@string/title_activity_map"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_map" >
         </activity>
-
         <activity
             android:name=".Menu_Cont"
-            android:label="Continent Menu"
-            android:configChanges="orientation|keyboardHidden|screenSize">
-            </activity>
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Continent Menu" >
+        </activity>
         <activity
             android:name=".Menu_countries"
-            android:label="Continent Menu"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Continent Menu" >
         </activity>
-
         <activity
             android:name=".Cities"
-            android:label="Continent Menu"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Continent Menu" >
         </activity>
-
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDeKZCQcG1P1OxlM1mzHMcmmJ8gTpMxZhQ" />
 
-
-
-
+        <activity
+            android:name=".test"
+            android:label="@string/title_activity_test" >
+        </activity>
     </application>
 
 </manifest>

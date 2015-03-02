@@ -445,7 +445,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
      */
     public String getTimeStampUTC(Long time){
         Date date = new Date(time * 1000);
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm z");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm z"); //Central European Time CET
         return sdf.format(date);
     }
 
@@ -481,9 +481,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
             MarkerOptions mark = new MarkerOptions()
                     .position(new LatLng(location.getLat(), location.getLong()))
-                    .title("Lat: " + location.getLat() + "  Long:" + location.getLong())
-                    .snippet("Sensors: " + location.getNumSensors() + "  Daytime: " + location.getTime() + "  Sunrise: " + getTimeStampUTC(location.getSunrise()) + "  Sunset: " + getTimeStampUTC(location.getSunset()) +
-                            "  Cloudiness: " + location.getCloudiness());
+                    .title("Lat: " + location.getLat() + "  Long: " + location.getLong())
+                    .snippet("Sensors: " + location.getNumSensors() + "  Cloudiness: " + location.getCloudiness());
                     //.title("sunrise: " + location.getSunrise() + "  sunset: " + location.getSunset() + "  cloudiness: " + location.getCloudiness() + " day: " + location.getTime());
                     /*.title("Sensors: " + location.getNumSensors() +
                             " \n Cloudiness: " + location.getCloudiness() +
@@ -557,10 +556,27 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
                 @Override
                 public void onInfoWindowClick(final Marker marker) {
+
+                    Location tempLoc = new Location();
+
+                    for(Location location : locations){
+                        if(("Lat: " + location.getLat() + "  Long: " + location.getLong()).equals(marker.getTitle())){
+                            tempLoc = location;
+                        }
+                    }
+
+                    String s0 = "Cloudiness: " + tempLoc.getCloudiness() + "%";
+                    String s1 = "Sensors: " + tempLoc.getNumSensors();
+                    String s2 = "Daytime: " + tempLoc.getTime();
+                    String s3 = "Sunrise: " + getTimeStampUTC(tempLoc.getSunrise());
+                    String s4 = "Sunrise: " + getTimeStampUTC(tempLoc.getSunset());
+                    String s5 = "\nDo you wish to delete this marker?";
+
+
                     new AlertDialog.Builder(new ContextThemeWrapper(MapActivity.this, android.R.style.Theme_Holo_Dialog))
                             .setTitle(marker.getTitle())
-                            .setMessage(marker.getSnippet() + "\n Delete?")
-                            .setCancelable(false)
+                            .setMessage(s0 + "\n" + s1 + "\n" + s2 + "\n" + s3 + "\n" + s4 + "\n" + s5)
+                            .setCancelable(true)
                             .setIcon(android.R.drawable.ic_dialog_map)
                             .setPositiveButton(getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
@@ -578,6 +594,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 }
             });
         }
+
 
         mapFragment.getMapAsync(this);
     }

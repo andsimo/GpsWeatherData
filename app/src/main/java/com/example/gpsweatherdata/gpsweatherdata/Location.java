@@ -20,6 +20,9 @@ public class Location implements Parcelable, Serializable{
     private int cloudiness;
     private long sunrise, sunset; //Tid i UNIX UTC
 
+    public Location(){
+
+    }
 
     /*
     Måste ha samma ordning som writeToParcel för att kunna återskapa objektet.
