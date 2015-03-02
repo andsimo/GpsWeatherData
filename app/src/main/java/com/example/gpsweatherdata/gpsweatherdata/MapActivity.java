@@ -272,8 +272,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
 
         }
-        else
-            super.onBackPressed();
+        else{}
+            //super.onBackPressed();
     }
 
     //***************************** DATABAS ************************************ //
