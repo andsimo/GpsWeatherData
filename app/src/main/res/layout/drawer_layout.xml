@@ -1,3 +1,16 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    >
+
+<ImageView
+    android:id="@+id/item_ic"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="10dp"
+    android:src="@drawable/ic_launcher"/>
 <TextView
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:background="?android:attr/activatedBackgroundIndicator"
@@ -8,7 +21,8 @@
     android:textAppearance="?android:attr/textAppearanceListItemSmall"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:id="@android:id/text1"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    android:id="@+id/item_txt"
+     />
 
 
+</LinearLayout>

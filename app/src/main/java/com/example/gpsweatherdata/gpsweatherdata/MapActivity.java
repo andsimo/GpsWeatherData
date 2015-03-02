@@ -21,14 +21,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -49,7 +46,6 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 
 /*
@@ -65,7 +61,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private GoogleMap map; // <------ DENNA LÄGGER MAN TILL MARKERS PÅ...
     private ArrayList<Location> locations;
-    private ArrayList<MarkerOptions> markerArray;
     private long timeStamp;
     private MapFragment mapFragment; // <----- DET ÄR DENNA MAN SKALL ÄNDRA INSTÄLLNINGAR PÅ INNAN!
     private ListView mDrawerList;
@@ -132,7 +127,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 
-        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_layout, mListContent));
+        mDrawerList.setAdapter(new NavigationDrawerAdapter(this, mListContent));
 
         //mDrawerList.setOnClickListener(new DrawerItemClickListener());
 
@@ -272,7 +267,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
 
         }
-        else{}
+
             //super.onBackPressed();
     }
 
@@ -512,15 +507,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
            // markerArray.add(mark);
             map.addMarker(mark);
 
-        }
-    }
-
-
-    private void renderMarkerArray(){
-        //map
-        mapFragment.getMap().clear();
-        for(MarkerOptions mark : markerArray){
-            mapFragment.getMap().addMarker(mark);
         }
     }
 
