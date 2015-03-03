@@ -54,17 +54,54 @@
     </RelativeLayout>
 
 
+<RelativeLayout
+    android:id="@+id/relative_drawer"
+    android:layout_width="240dp"
+    android:layout_height="fill_parent"
+    android:layout_gravity="start"
+    >
 
+    <ImageView
+        android:id="@+id/drawerLogo"
+        android:layout_width="fill_parent"
+        android:layout_height="90dp"
+        android:src="@drawable/parans_logo"
+        android:background="#CC000000"
+
+        />
 
     <ListView
         android:id="@+id/left_drawer"
-        android:layout_width="240dp"
+        android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
+        android:layout_below="@id/drawerLogo"
         android:choiceMode="singleChoice"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="0dp"
         android:background="#111"
         />
+
+
+
+    <TextView
+        android:id="@+id/updateTxt"
+        android:text="Last updated \n \n "
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/left_drawer"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#000000"
+        android:layout_above="@id/updateTxt"
+        android:paddingBottom="5dp"
+        />
+
+</RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>

@@ -22,6 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -61,18 +63,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private GoogleMap map; // <------ DENNA LÄGGER MAN TILL MARKERS PÅ...
     private ArrayList<Location> locations;
-    private long timeStamp;
     private MapFragment mapFragment; // <----- DET ÄR DENNA MAN SKALL ÄNDRA INSTÄLLNINGAR PÅ INNAN!
     private ListView mDrawerList;
     private String[] mListContent;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+    private RelativeLayout mRelativeLayout;
     private ProgressDialog progressDL;
     private ShowcaseView sv;
     private int value;
+    private TextView lastUpdated;
 
     private Fragment continentFragment;
     private FragmentManager fm;
+    private long lastUpdate;
 
 
     @Override
@@ -119,16 +123,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
      */
     public void initDrawer() {
 
+
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.relative_drawer);
+
         mListContent = getResources().getStringArray(R.array.drawer_menu);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-
+        lastUpdated = (TextView) findViewById(R.id.updateTxt);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 
         mDrawerList.setAdapter(new NavigationDrawerAdapter(this, mListContent));
 
+        lastUpdated.setText( "Last Updated: \n" + getTimeStamp(lastUpdate));
         //mDrawerList.setOnClickListener(new DrawerItemClickListener());
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
@@ -256,7 +264,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     @Override
     public void onBackPressed(){
-        if(mDrawerLayout.isDrawerOpen(mDrawerList)){
+        if(mDrawerLayout.isDrawerOpen(mRelativeLayout)){
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
         else if(continentFragment.isVisible()){
@@ -380,6 +388,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 else
                     //locations.clear();
                     locations = tempLocations;
+                lastUpdate = System.currentTimeMillis();
+                lastUpdated.setText("Last Updated: \n" + getTimeStamp(lastUpdate));
 
             }
             else if (error == 1) {          //felkod 1 = ingen connection till server => felmeddelande.
@@ -444,11 +454,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     }
 
     public String getTimeLastUpdate(){
-        Date date = new Date(timeStamp);
+        Date date = new Date(lastUpdate);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss yyyy-MM-dd  z");
         return sdf.format(date);
     }
 
+    public String getTimeStamp(Long time){
+        Date date = new Date(time);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss\nyyyy-MM-dd");
+        return sdf.format(date);
+    }
 
 
 
@@ -590,7 +605,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap gMap) {
         map = gMap;
-        if((timeStamp/1000L + 3600) < (System.currentTimeMillis() / 1000L))  //Senaste uppdateringen + 1 timme < just nu
+        if((lastUpdate/1000L + 3600) < (System.currentTimeMillis() / 1000L))  //Senaste uppdateringen + 1 timme < just nu
             refreshWeather();
         else
             addMarkers();
@@ -626,7 +641,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         Gson gson = new Gson();                 //Lagrar i Gsonformat
         String json = gson.toJson(locations);
         editor.putString(LOCATION_LIST, json);
-        editor.putLong(LAST_ACTIVE, System.currentTimeMillis());
+        editor.putLong(LAST_ACTIVE, lastUpdate);
         editor.commit();
         System.out.println("Saving...");
     }
@@ -639,10 +654,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         ArrayList<Location> tempList;
         SharedPreferences data = getSharedPreferences(LOCATION_DATA, 0);
 
-        timeStamp = data.getLong(LAST_ACTIVE, 0);
+        lastUpdate = data.getLong(LAST_ACTIVE, 0);
 
 
         Toast.makeText(this, "Last updated: " + getTimeLastUpdate(), Toast.LENGTH_LONG).show();
+        //lastUpdated.setText("Last updated: " + getTimeLastUpdate());
 
         if(data.contains(LOCATION_LIST)){
             String json = data.getString(LOCATION_LIST, "");
