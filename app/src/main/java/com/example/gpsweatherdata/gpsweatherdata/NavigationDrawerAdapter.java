@@ -43,7 +43,7 @@ public class NavigationDrawerAdapter extends ArrayAdapter<String> {
             case "Navigate Locations":
                 imageView.setImageResource(R.drawable.ic_action_view_as_list);
                 break;
-            case "Go to Parans Website":
+            case "Visit Parans Website":
                 imageView.setImageResource(R.drawable.ic_action_web_site);
                 break;
             default:
