@@ -569,7 +569,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     String s1 = "Sensors: " + tempLoc.getNumSensors();
                     String s2 = "Daytime: " + tempLoc.getTime();
                     String s3 = "Sunrise: " + getTimeStampUTC(tempLoc.getSunrise());
-                    String s4 = "Sunrise: " + getTimeStampUTC(tempLoc.getSunset());
+                    String s4 = "Sunset: " + getTimeStampUTC(tempLoc.getSunset());
                     String s5 = "\nDo you wish to delete this marker?";
 
 
